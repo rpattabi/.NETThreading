@@ -9,7 +9,16 @@ namespace Threading
 {
 	class Program
 	{
-		static void Main(string[] args)
+        /// <summary>
+        ///
+        /// Threading Examples in .NET
+        ///
+		/// Courtesy: 
+		/// "Threading in C#" by Joseph Albahari
+		/// http://www.albahari.com/threading/
+        ///
+        /// </summary>
+		static void Main()
 		{
 			//_1_ThreadClass();
 			//_2_LocalVariable();
@@ -156,7 +165,17 @@ namespace Threading
 		static void _8_Sleep()
 		{
 			Thread.Sleep(millisecondsTimeout: 500);
-			Thread.Sleep(TimeSpan.FromMilliseconds(500));
+			Thread.Sleep(TimeSpan.FromMilliseconds(500)); // Alternative
+
+            // Sleep(0) and Yield
+            //
+            // 1. Useful for advanced performance tweaks.
+            // 2. Diagnostic tool to uncover thread safety issues.
+            //
+            // "If inserting Thread.Yield() makes or breaks program, you almost certainly have a bug."
+
+			Thread.Sleep(0); // Relinquishes thread's current time slice immediately. Voluntarily give back CPU to other threads.
+			Thread.Yield();  // Relinquishes only to threads running on the _same_ processor.
 		}
 
 		#endregion
