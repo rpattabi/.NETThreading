@@ -9,15 +9,15 @@ namespace Threading
 {
 	class Program
 	{
-        /// <summary>
-        ///
-        /// Threading Examples in .NET
-        ///
+		/// <summary>
+		///
+		/// Threading Examples in .NET
+		///
 		/// Courtesy: 
 		/// "Threading in C#" by Joseph Albahari
 		/// http://www.albahari.com/threading/
-        ///
-        /// </summary>
+		///
+		/// </summary>
 		static void Main()
 		{
 			//_1_ThreadClass();
@@ -70,36 +70,36 @@ namespace Threading
 
 		#endregion
 
-        #region 3
+		#region 3
 
 		bool done_3;
-        static void _3_CommonReference()
+		static void _3_CommonReference()
 		{
 			Program p = new Program();
 			new Thread(p.Go_3).Start();
 			p.Go_3();
-        }
-        void Go_3()
+		}
+		void Go_3()
 		{
 			if (!done_3) { done_3 = true; Console.WriteLine("Done"); }
-        }
+		}
 
-        #endregion	
+		#endregion
 
 		#region 4
 
 		static bool done_4;
 
-        static void _4_StaticField()
+		static void _4_StaticField()
 		{
 			new Thread(Go_4).Start();
 			Go_4();
-        }
-        
-        static void Go_4()
+		}
+
+		static void Go_4()
 		{
 			if (!done_4) { done_4 = true; Console.WriteLine("Done"); }
-        }
+		}
 
 		#endregion
 
@@ -107,16 +107,16 @@ namespace Threading
 
 		static bool done_5;
 
-        static void _5_LackOfThreadSafety()
+		static void _5_LackOfThreadSafety()
 		{
 			new Thread(Go_5).Start();
 			Go_5();
-        }
-        
-        static void Go_5()
+		}
+
+		static void Go_5()
 		{
 			if (!done_5) { Console.WriteLine("Done"); done_5 = true; }
-        }
+		}
 
 		#endregion
 
@@ -125,13 +125,13 @@ namespace Threading
 		static bool done_6;
 		static readonly object locker = new object();
 
-        static void _6_Lock()
+		static void _6_Lock()
 		{
 			new Thread(Go_6).Start();
 			Go_6();
-        }
-        
-        static void Go_6()
+		}
+
+		static void Go_6()
 		{
 			lock (locker)
 			{
@@ -152,11 +152,11 @@ namespace Threading
 			Console.WriteLine("Thread t has ended!");
 		}
 
-        static void Go_7()
+		static void Go_7()
 		{
 			for (int i = 0; i < 1000; i++)
 				Console.Write("y");
-        }
+		}
 
 		#endregion
 
@@ -167,12 +167,12 @@ namespace Threading
 			Thread.Sleep(millisecondsTimeout: 500);
 			Thread.Sleep(TimeSpan.FromMilliseconds(500)); // Alternative
 
-            // Sleep(0) and Yield
-            //
-            // 1. Useful for advanced performance tweaks.
-            // 2. Diagnostic tool to uncover thread safety issues.
-            //
-            // "If inserting Thread.Yield() makes or breaks program, you almost certainly have a bug."
+			// Sleep(0) and Yield
+			//
+			// 1. Useful for advanced performance tweaks.
+			// 2. Diagnostic tool to uncover thread safety issues.
+			//
+			// "If inserting Thread.Yield() makes or breaks program, you almost certainly have a bug."
 
 			Thread.Sleep(0); // Relinquishes thread's current time slice immediately. Voluntarily give back CPU to other threads.
 			Thread.Yield();  // Relinquishes only to threads running on the _same_ processor.
