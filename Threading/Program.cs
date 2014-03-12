@@ -32,7 +32,8 @@ namespace Threading
             //_10_PassArguments();
             //_11_LambdaGotcha();
             //_11a_LambdaGotcha_Workaround();
-            _11b_LambdaGotcha();
+            //_11b_LambdaGotcha();
+			_12_Name();
         }
 
         #region 1
@@ -256,5 +257,25 @@ namespace Threading
         }
 
         #endregion
-    }
+
+		#region 12
+
+        static void _12_Name()
+		{
+			Thread.CurrentThread.Name = "Main";
+
+			Thread worker = new Thread(Go_12);
+			worker.Name = "worker";
+			worker.Start();
+
+			Go_12();
+        }
+
+        static void Go_12()
+		{
+			Console.WriteLine("Hello from " + Thread.CurrentThread.Name);
+        }
+
+		#endregion
+	}
 }
