@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Threading;
 
@@ -33,7 +34,11 @@ namespace Threading
             //_11_LambdaGotcha();
             //_11a_LambdaGotcha_Workaround();
             //_11b_LambdaGotcha();
-			_12_Name();
+			//_12_Name();
+			//_13_Foreground();
+			//_14_Priority();
+			//_15_ExceptionHandling();
+			_15a_ExceptionHandling();
         }
 
         #region 1
@@ -277,5 +282,92 @@ namespace Threading
         }
 
 		#endregion
+
+		#region 13
+
+        static void _13_Foreground()
+		{
+			Thread foreground = new Thread(_ => 
+            {
+                Console.WriteLine("In Foreground Thread...");
+                Console.ReadLine();
+				Console.WriteLine("Foreground: You did it!");
+            });
+			foreground.Start();
+
+			Thread background = new Thread(_ => 
+            {
+                Console.WriteLine("In Background Thread...");
+                Console.ReadLine();
+				Console.WriteLine("Background: You did it!");
+            });
+			background.IsBackground = true;
+			background.Start();
+
+            // Once foreground thread ends its work, programs stops.
+        }
+
+		#endregion
+
+		#region 14
+
+        static void _14_Priority()
+		{
+			Thread t = new Thread(Go_14);
+			t.Priority = ThreadPriority.Highest;
+			t.Start();
+
+			using (Process p = Process.GetCurrentProcess())
+			{
+				p.PriorityClass = ProcessPriorityClass.High;
+			}
+        }
+
+        static void Go_14()
+		{
+            
+        }
+
+		#endregion
+
+		#region 15
+
+        static void _15_ExceptionHandling()
+		{
+			try
+			{
+                new Thread(Go_15).Start();
+			}
+			catch
+			{
+                // We'll never get here! And the exception will go unhandled.
+				Console.WriteLine("Exception!");
+			}
+        }
+
+        static void Go_15()
+		{
+			throw null; // Throws a NullReferenceException
+        }
+
+        static void _15a_ExceptionHandling()
+		{
+            new Thread(Go_15a).Start();
+        }
+
+        static void Go_15a()
+		{
+			try
+			{
+				throw null; // Throws a NullReferenceException
+			}
+			catch
+			{
+				Console.WriteLine("Exception!");
+			}
+		}
+
+		#endregion
+
 	}
 }
