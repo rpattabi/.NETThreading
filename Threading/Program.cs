@@ -38,7 +38,13 @@ namespace Threading
 			//_13_Foreground();
 			//_14_Priority();
 			//_15_ExceptionHandling();
-			_15a_ExceptionHandling();
+			//_15a_ExceptionHandling();
+
+			//_16_ThreadPool_Task();
+			//_16a_Task_Result();
+			//_17_ThreadPool_OldStyle_QueueUserWorkItem();
+			//_17a_ThreadPool_OldStyle_AsyncDelegates();
+			//_18_ThreadPool_Optimization();
         }
 
         #region 1
@@ -365,6 +371,88 @@ namespace Threading
 			{
 				Console.WriteLine("Exception!");
 			}
+		}
+
+		#endregion
+
+		#region 16
+
+        static void _16_ThreadPool_Task()
+		{
+			var task = Task.Factory.StartNew(Go_16);
+			task.Wait();
+        }
+
+        static void Go_16()
+		{
+			Console.WriteLine("Hello from ThreadPool!");
+        }
+
+        static void _16a_Task_Result()
+		{
+			try
+			{
+				Task<string> task = Task.Factory
+									.StartNew<string>(() =>
+										DownloadString("http://google.com"));
+
+				Console.WriteLine(task.Result); // internally waits
+			}
+			catch (AggregateException ex)
+			{
+				Console.WriteLine(ex.InnerException.Message);
+			}
+		}
+
+        static string DownloadString(string uri)
+		{
+			using (var wc = new System.Net.WebClient())
+			{
+				return wc.DownloadString(uri);
+			}
+        }
+
+		#endregion
+
+		#region 17
+
+        static void _17_ThreadPool_OldStyle_QueueUserWorkItem()
+		{
+			ThreadPool.QueueUserWorkItem(Go_17);
+			ThreadPool.QueueUserWorkItem(Go_17, state: 123);
+			Console.ReadLine();
+		}
+
+        static void Go_17(object data)
+		{
+			Console.WriteLine("Hello from ThreadPool! " + data);
+        }
+
+        static void _17a_ThreadPool_OldStyle_AsyncDelegates()
+		{
+			Func<string, int> method = Go_17a;
+			IAsyncResult cookie = method.BeginInvoke("test", null, null);
+
+			int result = method.EndInvoke(cookie);
+			Console.WriteLine("String length is: " + result);
+        }
+
+        static int Go_17a(string s)
+		{
+			return s.Length;
+        }
+
+		#endregion
+
+		#region 18
+
+        static void _18_ThreadPool_Optimization()
+		{
+            // Defaults are better. 
+			// But this example just shows some naive possibilities.
+            //
+			ThreadPool.SetMaxThreads(workerThreads: 10, completionPortThreads: 3);
+			ThreadPool.SetMinThreads(workerThreads: 4, completionPortThreads: 4);
 		}
 
 		#endregion
