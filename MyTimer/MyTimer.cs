@@ -11,7 +11,7 @@ namespace MyTimer
 {
     class MyTimer
     {
-        private Stopwatch _stopwatch;
+		private ManualResetEvent _manualResetEvent;
         private Thread _thread;
 
         public int Interval_ms { get; set; }
@@ -19,6 +19,7 @@ namespace MyTimer
         public MyTimer()
         {
             this.Interval_ms = 1;
+			_manualResetEvent = new ManualResetEvent(initialState: false);
         }
 
         public void Start()
@@ -27,27 +28,16 @@ namespace MyTimer
 
             _thread = new Thread(() =>
             {
-                _stopwatch = Stopwatch.StartNew();
+                while (_manualResetEvent.WaitOne(this.Interval_ms) == false)
+				{
+					if (Tick != null)
+					{
+						// Attempting to execute callback on the calling thread did not work.
+						//dispatcher.BeginInvoke((Action)(() => Tick(this, new EventArgs())));
 
-                try
-                {
-                    while (_stopwatch.IsRunning)
-                    {
-                        if (_stopwatch.ElapsedMilliseconds == 0)
-                            continue;
-
-                        if (_stopwatch.ElapsedMilliseconds >= this.Interval_ms)
-                            break;
-
-                        if (this.Interval_ms % _stopwatch.ElapsedMilliseconds == 0)
-                            if (Tick != null)
-                                dispatcher.BeginInvoke((Action) (()=>Tick(this, new EventArgs())));
-                    }
-                }
-                finally
-                {
-                    _stopwatch.Stop();
-                }
+						Tick(this, new EventArgs()); // Warning: Callback happens on secondary thread
+					}
+				}
             });
 
             _thread.Start();
@@ -55,7 +45,7 @@ namespace MyTimer
 
         public void Stop()
         {
-            _thread.Abort();
+			_manualResetEvent.Set();
         }
 
         public event EventHandler Tick;

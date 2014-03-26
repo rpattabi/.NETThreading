@@ -10,25 +10,22 @@ namespace MyTimer
 {
     class Program
     {
+		private const int Interval_ms = 500;
+
         static void Main(string[] args)
         {
-            var timer_5ms = new MyTimer() { Interval_ms = 5 };
-            timer_5ms.Tick += timer_5ms_Tick;
-            timer_5ms.Start();
+            var timer = new MyTimer() { Interval_ms = Interval_ms };
+            timer.Tick += timer_Tick;
+            timer.Start();
 
-            var stopwatch = Stopwatch.StartNew();
-            while (true)
-                if (stopwatch.ElapsedMilliseconds >= 10000)
-                    break;
-                else
-                    Thread.Yield();
-
-            stopwatch.Stop();
+			var manualResetEvent = new ManualResetEvent(initialState: false);
+            while (manualResetEvent.WaitOne(Interval_ms) == false)
+                Thread.Yield();
         }
 
-        static void timer_5ms_Tick(object sender, EventArgs e)
+        static void timer_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("5ms tick");
+            Console.WriteLine(DateTime.Now.ToString("HH:mm::ss.ffffzzz") + " " + Interval_ms + "ms tick");
         }
     }
 }
