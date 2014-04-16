@@ -13,7 +13,8 @@ namespace Synchronization
 		{
 			//Console.WriteLine(_1_SimplifyThreadState(Thread.CurrentThread.ThreadState));
             //_5_Lock_Deadlock();
-			_6_Mutex_ApplicationSingleton(); // ctrl+f5 twice
+			//_6_Mutex_ApplicationSingleton(); // ctrl+f5 twice
+			_7_Semaphore();
 		}
 
         public static ThreadState _1_SimplifyThreadState(ThreadState ts)
@@ -99,6 +100,26 @@ namespace Synchronization
 		{
 			Console.WriteLine("Running. Press Enter to exit");
 			Console.ReadLine();
+		}
+
+        static SemaphoreSlim _sema = new SemaphoreSlim(initialCount: 3); // capacity 3
+        public static void _7_Semaphore()
+		{
+			for (int i = 0; i < 6; i++)
+			{
+				new Thread(Go_Semaphored).Start(i);
+			}
+        }
+
+		private static void Go_Semaphored(object id)
+		{
+			Console.WriteLine(id + " wants to enter");
+
+			_sema.Wait();
+			Console.WriteLine(id + " is in");
+			Thread.Sleep(1000 * (int)id);
+			Console.WriteLine(id + " is leaving");
+			_sema.Release();
 		}
 	}
 
