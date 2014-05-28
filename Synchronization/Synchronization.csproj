@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Synchronization.Test</StartupObject>
+    <StartupObject>Synchronization.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

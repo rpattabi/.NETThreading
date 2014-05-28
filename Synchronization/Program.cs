@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,7 +15,8 @@ namespace Synchronization
 			//Console.WriteLine(_1_SimplifyThreadState(Thread.CurrentThread.ThreadState));
             //_5_Lock_Deadlock();
 			//_6_Mutex_ApplicationSingleton(); // ctrl+f5 twice
-			_7_Semaphore();
+			//_7_Semaphore();
+            _8_Semaphore_AcrossProcess();
 		}
 
         public static ThreadState _1_SimplifyThreadState(ThreadState ts)
@@ -121,6 +123,21 @@ namespace Synchronization
 			Console.WriteLine(id + " is leaving");
 			_sema.Release();
 		}
+
+        static Semaphore _semaCrossProcess = new Semaphore(initialCount: 2, 
+                                                            maximumCount: 2, 
+                                                            name: ".NETThreading.CrossProcess");
+        private static void _8_Semaphore_AcrossProcess()
+        {
+            Console.Write("This thread wants to enter");
+
+            _semaCrossProcess.WaitOne();
+            var tempFile = File.CreateText(Path.GetRandomFileName());
+            tempFile.Dispose();
+            Thread.Sleep(5000);
+            _semaCrossProcess.Release();
+        }
+
 	}
 
     class _2_Lock_ThreadUnsafe
